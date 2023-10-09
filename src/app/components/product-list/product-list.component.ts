@@ -12,10 +12,16 @@ export class ProductListComponent implements OnInit {
 
   products: Product[] = [];
   currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
   searchMode: boolean = false;
 
+  // new properties for pagination
+  thePageNumber: number = 1;
+  thePageSize: number = 10;
+  theTotalElements: number = 0;
+  
   constructor(private productService: ProductService,
-    private route: ActivatedRoute) { }
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(() => {
@@ -56,6 +62,17 @@ export class ProductListComponent implements OnInit {
     else {
       // not category id available ... default to category id 1
       this.currentCategoryId = 1;
+    }
+
+    //
+    // Check if we have a different category than previous
+    // Note: Angular will reuse a component if it is currently being viewed
+    //
+
+    // if we have a different category id than previous 
+    // then set thePageNumber back to 1
+    if(this.previousCategoryId != this.currentCategoryId) {
+      this.thePageNumber = 1;
     }
 
     // now get the products for the given category id
