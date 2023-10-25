@@ -25,7 +25,7 @@ export class CheckoutComponent implements OnInit {
   billingAddressStates: State[] = [];
 
   constructor(private formBuilder: FormBuilder,
-              private shopFormService: ShopFormService) { }
+    private shopFormService: ShopFormService) { }
 
   ngOnInit(): void {
 
@@ -33,8 +33,8 @@ export class CheckoutComponent implements OnInit {
       customer: this.formBuilder.group({
         firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
         lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-        email: new FormControl('', 
-                              [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])
+        email: new FormControl('',
+          [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])
       }),
       shippingAddress: this.formBuilder.group({
         street: [''],
@@ -86,11 +86,19 @@ export class CheckoutComponent implements OnInit {
         this.countries = data;
       }
     );
-
   }
+
+  get firstName() { return this.checkoutFormGroup.get('customer.firstName'); }
+  get lastName() { return this.checkoutFormGroup.get('customer.lastName'); }
+  get email() { return this.checkoutFormGroup.get('customer.email'); }
 
   onSubmit() {
     console.log("Handling the submit button");
+
+    if(this.checkoutFormGroup.invalid) {
+      this.checkoutFormGroup.markAllAsTouched();
+    }
+    
     console.log(this.checkoutFormGroup.get('customer').value);
     console.log("The email adress is " + this.checkoutFormGroup.get('customer').value.email);
 
@@ -115,7 +123,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   handleMonthsAndYears() {
-    
+
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
 
     const currentYear: number = new Date().getFullYear();
@@ -125,7 +133,7 @@ export class CheckoutComponent implements OnInit {
 
     let startMonth: number;
 
-    if(currentYear === selectedYear) {
+    if (currentYear === selectedYear) {
       startMonth = new Date().getMonth() + 1;
     } else {
       startMonth = 1;
@@ -152,7 +160,7 @@ export class CheckoutComponent implements OnInit {
     this.shopFormService.getStates(countryCode).subscribe(
       data => {
 
-        if(formGroupName === 'shippingAddress') {
+        if (formGroupName === 'shippingAddress') {
           this.shippingAddressStates = data;
         } else {
           this.billingAddressStates = data;
